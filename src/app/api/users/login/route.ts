@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     console.log(reqBody);
     //check if user exist
     const user = await User.findOne({ email });
-    if (user) {
+    if (!user) {
       return NextResponse.json({ error: "User doesnt exist" }, { status: 400 });
     }
     //check if password valid
@@ -37,5 +37,7 @@ export async function POST(request: NextRequest) {
     });
     response.cookies.set("token", token, { httpOnly: true });
     return response;
-  } catch (error) {}
+  } catch (error) {
+    console.log("error have");
+  }
 }

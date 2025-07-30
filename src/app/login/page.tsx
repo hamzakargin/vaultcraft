@@ -63,7 +63,7 @@ export default function LoginPage() {
         onClick={onLogin}
         className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600  text-black"
       >
-        {buttonDisabled ? "Hold on" : "login"}
+        login
       </button>
       <Link href="/signup">Visit signup page</Link>
     </div>
