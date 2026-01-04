@@ -11,33 +11,50 @@ export async function POST(request: NextRequest) {
     const reqBody = await request.json();
     const { email, password } = reqBody;
     console.log(reqBody);
-    //check if user exist
+
+    // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return NextResponse.json({ error: "User doesnt exist" }, { status: 400 });
+      return NextResponse.json(
+        { error: "User doesn't exist" },
+        { status: 400 }
+      );
     }
-    //check if password valid
+
+    // Check if password is valid
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
-      return NextResponse.json({ error: "Invalid password" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid password" },
+        { status: 400 }
+      );
     }
-    //create token data
+
+    // Create token data
     const tokenData = {
       id: user._id,
       username: user.username,
       email: user.email,
     };
-    //cretae token
+
+    // Create token
     const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
       expiresIn: "1d",
     });
+
     const response = NextResponse.json({
       message: "Login successfully",
       success: true,
     });
+
     response.cookies.set("token", token, { httpOnly: true });
     return response;
-  } catch (error) {
-    console.log("error have");
+
+  } catch (error: any) {
+    console.error("Login error:", error);
+    return NextResponse.json(
+      { error: error.message || "Internal server error" },
+      { status: 500 }
+    );
   }
 }
